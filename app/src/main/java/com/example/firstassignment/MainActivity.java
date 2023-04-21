@@ -105,10 +105,10 @@ public class MainActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-        //if the day is sunday you are allowed entrance
-        if(dayOfWeek == 6){
+        //if the day is sunday|friday|saturday you are allowed entrance
+        if(dayOfWeek >= 6 || dayOfWeek == 1){
             isDayOK = true;
-            Toast.makeText(MainActivity.this, "Today is Friday", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Today is part of the weekend", Toast.LENGTH_SHORT).show();
         }else{
             isDayOK = false;
         }
