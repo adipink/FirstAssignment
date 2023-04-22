@@ -5,7 +5,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -30,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private MaterialButton main_BTN_enter;
 
     private BatteryManager batteryManage ;
-    private Calendar calendar;
 
     private boolean isPercentageOK, isContactOK, isWifi, isDayOK, isHourOK;
 
@@ -44,31 +45,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createListeners() {
-        main_BTN_enter.setOnClickListener(new View.OnClickListener(){
+        main_BTN_enter.setOnClickListener(v -> {
+            //get password from user
+            String password = main_EDT_Password.getText().toString();
 
-            @Override
-            public void onClick(View v) {
-                //get password from user
-                String password = main_EDT_Password.getText().toString();
-
-                //check if password is ""
-                if(password.isEmpty()){
-                    Toast.makeText(MainActivity.this, "Password is empty", Toast.LENGTH_SHORT).show();
-                }else{
-                    //check if phone is connected to WIFI
-                    checkWifi();
-                    //check Percentage of the phone
-                    checkPercentage(password);
-                    //check the time of the phone
-                    checkTime();
-                    //contactExists();
-                    if(isPercentageOK/* && isContactOK*/ && isWifi && isDayOK && isHourOK){
-                        Toast.makeText(MainActivity.this, "You are connected to WIFI", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(MainActivity.this, "Login Succeeded", Toast.LENGTH_SHORT).show();
-                    }
+            //check if password is ""
+            if(password.isEmpty()){
+                Toast.makeText(MainActivity.this, "Password is empty", Toast.LENGTH_SHORT).show();
+            }else{
+                //check if phone is connected to WIFI
+                checkWifi();
+                //check Percentage of the phone
+                checkPercentage(password);
+                //check the time of the phone
+                checkTime();
+                //contactExists();
+                if(isPercentageOK/* && isContactOK*/ && isWifi && isDayOK && isHourOK){
+                    Toast.makeText(MainActivity.this, "You are connected to WIFI", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Login Succeeded", Toast.LENGTH_SHORT).show();
+                    loginComplete();
                 }
             }
         });
+    }
+
+    private void loginComplete(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("SUCCESS");
+        alert.setPositiveButton("Ok", (dialog, whichButton) -> {
+        });
+
+        alert.setNegativeButton("Cancel", (dialog, whichButton) -> {
+            // Canceled.
+        });
+        alert.show();
     }
 
 
@@ -83,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkPercentage(String password) {
-        int battery = batteryManage.getIntProperty(batteryManage.BATTERY_PROPERTY_CAPACITY);
+        int battery = batteryManage.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
         int pass = Integer.parseInt(password);
 
         //is password is bigger than battery user can enter
@@ -102,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkTime(){
-        calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
         //if the day is sunday|friday|saturday you are allowed entrance
