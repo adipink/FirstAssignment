@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "You are connected to WIFI", Toast.LENGTH_SHORT).show();
                     //Toast.makeText(MainActivity.this, "Login Succeeded", Toast.LENGTH_SHORT).show();
                     loginComplete();
+                }else{
+                    Toast.makeText(MainActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -107,8 +109,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkWifi(){
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(cm == null){
+            isWifi = false;
+            return;
+        }
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         isWifi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
+        Toast.makeText(MainActivity.this, "WIFI", Toast.LENGTH_SHORT).show();
     }
 
     private void checkTime(){
